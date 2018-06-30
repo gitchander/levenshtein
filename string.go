@@ -5,31 +5,47 @@ import (
 	"fmt"
 )
 
-func Strings(a, b string) *Params {
+func Strings(a, b string) int {
+	return Distance(NewParamsStr(a, b))
+}
+
+func Runes(a, b []rune) int {
+	p := &Params{
+		Costs: DefaultCosts,
+		LenA:  len(a),
+		LenB:  len(b),
+		Match: func(i, j int) bool {
+			return a[i] == b[j]
+		},
+	}
+	return Distance(p)
+}
+
+func NewParamsStr(a, b string) *Params {
 	var (
 		as = []rune(a)
 		bs = []rune(b)
 	)
 	return &Params{
-		PriceList: DefaultPriceList,
-		LenA:      len(as),
-		LenB:      len(bs),
+		Costs: DefaultCosts,
+		LenA:  len(as),
+		LenB:  len(bs),
 		Match: func(i, j int) bool {
 			return as[i] == bs[j]
 		},
 	}
 }
 
-func PrintMatrix(pl PriceList, a, b string, prefix string) string {
+func PrintMatrix(cs Costs, a, b string, prefix string) string {
 
 	var (
 		as = []rune(a)
 		bs = []rune(b)
 	)
 	p := &Params{
-		PriceList: pl,
-		LenA:      len(as),
-		LenB:      len(bs),
+		Costs: cs,
+		LenA:  len(as),
+		LenB:  len(bs),
 		Match: func(i, j int) bool {
 			return as[i] == bs[j]
 		},

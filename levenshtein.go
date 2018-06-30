@@ -1,19 +1,20 @@
 package levenshtein
 
-type PriceList struct {
+// Weights
+type Costs struct {
 	DelCost int // Delete cost
 	InsCost int // Insert cost
 	SubCost int // Substitution cost
 }
 
-var DefaultPriceList = PriceList{
+var DefaultCosts = Costs{
 	InsCost: 1,
 	DelCost: 1,
 	SubCost: 1,
 }
 
 type Params struct {
-	PriceList
+	Costs
 	LenA, LenB int
 	Match      func(i, j int) bool
 }
