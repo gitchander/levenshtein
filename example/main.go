@@ -65,7 +65,7 @@ func exampleParams() {
 		b = sample[1]
 	)
 
-	cs := lev.Costs{
+	costs := lev.Costs{
 		DelCost: 1,
 		InsCost: 1,
 		SubCost: 1,
@@ -76,7 +76,7 @@ func exampleParams() {
 		bs = []rune(b)
 	)
 	p := &lev.Params{
-		Costs: cs,
+		Costs: costs,
 		LenA:  len(as),
 		LenB:  len(bs),
 		Match: func(i, j int) bool {
@@ -89,18 +89,18 @@ func exampleParams() {
 
 func examplePrintMatrix() {
 	fmt.Println("Example Print Matrix:")
-	cs := lev.Costs{
+	costs := lev.Costs{
 		DelCost: 1,
 		InsCost: 1,
 		SubCost: 1,
 	}
 	var (
-		sample = samples[4]
+		sample = samples[2]
 
-		a = sample[0]
-		b = sample[1]
+		a = []rune(sample[0])
+		b = []rune(sample[1])
 	)
-	fmt.Println(lev.PrintMatrix(cs, a, b, ""))
+	fmt.Println(lev.PrintableMatrix(costs, a, b, ""))
 }
 
 func exampleRecursive() {
@@ -111,7 +111,7 @@ func exampleRecursive() {
 		a = sample[0]
 		b = sample[1]
 	)
-	p := lev.NewParamsStr(a, b)
+	p := lev.NewParamsStrings(a, b)
 	fmt.Println(lev.Recursive(p))
 }
 

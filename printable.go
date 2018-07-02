@@ -5,51 +5,9 @@ import (
 	"fmt"
 )
 
-func Strings(a, b string) int {
-	return Distance(NewParamsStr(a, b))
-}
-
-func Runes(a, b []rune) int {
-	p := &Params{
-		Costs: DefaultCosts,
-		LenA:  len(a),
-		LenB:  len(b),
-		Match: func(i, j int) bool {
-			return a[i] == b[j]
-		},
-	}
-	return Distance(p)
-}
-
-func NewParamsStr(a, b string) *Params {
-	var (
-		as = []rune(a)
-		bs = []rune(b)
-	)
-	return &Params{
-		Costs: DefaultCosts,
-		LenA:  len(as),
-		LenB:  len(bs),
-		Match: func(i, j int) bool {
-			return as[i] == bs[j]
-		},
-	}
-}
-
-func PrintMatrix(cs Costs, a, b string, prefix string) string {
-
-	var (
-		as = []rune(a)
-		bs = []rune(b)
-	)
-	p := &Params{
-		Costs: cs,
-		LenA:  len(as),
-		LenB:  len(bs),
-		Match: func(i, j int) bool {
-			return as[i] == bs[j]
-		},
-	}
+func PrintableMatrix(costs Costs, a, b []rune, prefix string) string {
+	p := NewParamsRunes(a, b)
+	p.Costs = costs
 
 	ssd := MakeMatrix(p)
 
@@ -82,7 +40,7 @@ func PrintMatrix(cs Costs, a, b string, prefix string) string {
 	buf.WriteString(empty)
 	buf.WriteString(empty)
 	for j := 1; j < nj; j++ {
-		fmt.Fprintf(&buf, formatRune, cellWidth, bs[j-1])
+		fmt.Fprintf(&buf, formatRune, cellWidth, b[j-1])
 	}
 	buf.WriteByte('\n')
 
@@ -95,7 +53,7 @@ func PrintMatrix(cs Costs, a, b string, prefix string) string {
 
 	for i := 1; i < ni; i++ {
 		buf.WriteString(prefix)
-		fmt.Fprintf(&buf, formatRune, cellWidth, as[i-1])
+		fmt.Fprintf(&buf, formatRune, cellWidth, a[i-1])
 		for j := 0; j < nj; j++ {
 			fmt.Fprintf(&buf, formatNumber, cellWidth, ssd[i][j])
 		}
