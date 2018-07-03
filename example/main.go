@@ -61,26 +61,20 @@ func exampleParams() {
 	var (
 		sample = samples[0]
 
-		a = sample[0]
-		b = sample[1]
+		a = []rune(sample[0])
+		b = []rune(sample[1])
 	)
 
-	costs := lev.Costs{
-		DelCost: 1,
-		InsCost: 1,
-		SubCost: 1,
-	}
-
-	var (
-		as = []rune(a)
-		bs = []rune(b)
-	)
 	p := &lev.Params{
-		Costs: costs,
-		LenA:  len(as),
-		LenB:  len(bs),
+		Costs: lev.Costs{
+			DelCost: 1,
+			InsCost: 1,
+			SubCost: 1,
+		},
+		LenA: len(a),
+		LenB: len(b),
 		Match: func(i, j int) bool {
-			return as[i] == bs[j]
+			return a[i] == b[j]
 		},
 	}
 
@@ -89,7 +83,7 @@ func exampleParams() {
 
 func examplePrintMatrix() {
 	fmt.Println("Example Print Matrix:")
-	costs := lev.Costs{
+	var costs = lev.Costs{
 		DelCost: 1,
 		InsCost: 1,
 		SubCost: 1,

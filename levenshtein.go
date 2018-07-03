@@ -1,5 +1,6 @@
 package levenshtein
 
+// It works too slowly
 func Recursive(p *Params) int {
 	return recursiveDistance(p, p.LenA, p.LenB)
 }
@@ -12,9 +13,9 @@ func recursiveDistance(p *Params, i, j int) int {
 		return j * p.InsCost
 	}
 	return minInt3(
-		recursiveDistance(p, i-1, j)+p.DelCost,             // (i-1, j) - Delete
-		recursiveDistance(p, i, j-1)+p.InsCost,             // (i, j-1) - Insert
-		recursiveDistance(p, i-1, j-1)+p.calcSubCost(i, j), // (i-1, j-1) - Substitution
+		recursiveDistance(p, i-1, j)+p.DelCost,              // (i-1, j) - Delete
+		recursiveDistance(p, i, j-1)+p.InsCost,              // (i, j-1) - Insert
+		recursiveDistance(p, i-1, j-1)+calcSubCost(p, i, j), // (i-1, j-1) - Substitution
 	)
 }
 
@@ -40,9 +41,9 @@ func MakeMatrix(p *Params) [][]int {
 	for i := 1; i < ni; i++ {
 		for j := 1; j < nj; j++ {
 			ssd[i][j] = minInt3(
-				ssd[i-1][j]+p.DelCost,             // (i-1, j) - Delete
-				ssd[i][j-1]+p.InsCost,             // (i, j-1) - Insert
-				ssd[i-1][j-1]+p.calcSubCost(i, j), // (i-1, j-1) - Substitution
+				ssd[i-1][j]+p.DelCost,              // (i-1, j) - Delete
+				ssd[i][j-1]+p.InsCost,              // (i, j-1) - Insert
+				ssd[i-1][j-1]+calcSubCost(p, i, j), // (i-1, j-1) - Substitution
 			)
 		}
 	}
@@ -50,7 +51,7 @@ func MakeMatrix(p *Params) [][]int {
 	return ssd
 }
 
-// main function
+// It is main function
 func Distance(p *Params) int {
 	if p.LenA < p.LenB {
 		return distanceLenA(p)
@@ -63,24 +64,24 @@ func distanceLenA(p *Params) int {
 		ni = p.LenA + 1
 		nj = p.LenB + 1
 	)
-	vs := make([]int, ni)
+	vis := make([]int, ni)
 	for i := 0; i < ni; i++ {
-		vs[i] = i * p.DelCost
+		vis[i] = i * p.DelCost
 	}
 	for j := 1; j < nj; j++ {
-		vi := vs[0]
-		vs[0] = j * p.InsCost
+		vi := vis[0]
+		vis[0] = j * p.InsCost
 		for i := 1; i < ni; i++ {
-			temp := vs[i]
-			vs[i] = minInt3(
-				vs[i-1]+p.DelCost,      // (i-1, j) - Delete
-				vs[i]+p.InsCost,        // (i, j-1) - Insert
-				vi+p.calcSubCost(i, j), // (i-1, j-1) - Substitution
+			temp := vis[i]
+			vis[i] = minInt3(
+				vis[i-1]+p.DelCost,      // (i-1, j) - Delete
+				vis[i]+p.InsCost,        // (i, j-1) - Insert
+				vi+calcSubCost(p, i, j), // (i-1, j-1) - Substitution
 			)
 			vi = temp
 		}
 	}
-	return vs[ni-1]
+	return vis[ni-1]
 }
 
 func distanceLenB(p *Params) int {
@@ -88,24 +89,31 @@ func distanceLenB(p *Params) int {
 		ni = p.LenA + 1
 		nj = p.LenB + 1
 	)
-	vs := make([]int, nj)
+	vjs := make([]int, nj)
 	for j := 0; j < nj; j++ {
-		vs[j] = j * p.InsCost
+		vjs[j] = j * p.InsCost
 	}
 	for i := 1; i < ni; i++ {
-		vj := vs[0]
-		vs[0] = i * p.DelCost
+		vj := vjs[0]
+		vjs[0] = i * p.DelCost
 		for j := 1; j < nj; j++ {
-			temp := vs[j]
-			vs[j] = minInt3(
-				vs[j]+p.DelCost,        // (i-1, j) - Delete
-				vs[j-1]+p.InsCost,      // (i, j-1) - Insert
-				vj+p.calcSubCost(i, j), // (i-1, j-1) - Substitution
+			temp := vjs[j]
+			vjs[j] = minInt3(
+				vjs[j]+p.DelCost,        // (i-1, j) - Delete
+				vjs[j-1]+p.InsCost,      // (i, j-1) - Insert
+				vj+calcSubCost(p, i, j), // (i-1, j-1) - Substitution
 			)
 			vj = temp
 		}
 	}
-	return vs[nj-1]
+	return vjs[nj-1]
+}
+
+func calcSubCost(p *Params, i, j int) int {
+	if p.Match(i-1, j-1) {
+		return 0
+	}
+	return p.SubCost
 }
 
 func minInt3(a, b, c int) int {

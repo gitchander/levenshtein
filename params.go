@@ -19,13 +19,6 @@ type Params struct {
 	Match      func(i, j int) bool
 }
 
-func (p *Params) calcSubCost(i, j int) int {
-	if p.Match(i-1, j-1) {
-		return 0
-	}
-	return p.SubCost
-}
-
 func NewParamsRunes(a, b []rune) *Params {
 	return &Params{
 		Costs: DefaultCosts,
