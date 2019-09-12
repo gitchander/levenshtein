@@ -75,13 +75,9 @@ func exampleDistanceCosts() {
 
 func examplePrintMatrix() {
 	fmt.Println("Example Print Matrix:")
-	cs := lev.Costs{
-		DelCost: 1,
-		InsCost: 1,
-		SubCost: 1,
-	}
+	cs := lev.DefaultCosts
 	var (
-		sample = samples[2]
+		sample = samples[0]
 
 		a = []rune(sample[0])
 		b = []rune(sample[1])
