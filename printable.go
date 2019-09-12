@@ -5,15 +5,15 @@ import (
 	"fmt"
 )
 
-func PrintableMatrix(costs Costs, a, b []rune, prefix string) string {
-	p := NewParamsRunes(a, b)
-	p.Costs = costs
+func PrintableMatrix(cs Costs, a, b []rune, prefix string) string {
 
-	ssd := MakeMatrix(p)
+	v := RuneSlices{a, b}
+
+	ssd := MakeMatrix(v, cs)
 
 	var (
-		ni = p.LenA + 1
-		nj = p.LenB + 1
+		ni = v.Len(0) + 1
+		nj = v.Len(1) + 1
 	)
 
 	var cellWidth int
@@ -23,8 +23,6 @@ func PrintableMatrix(costs Costs, a, b []rune, prefix string) string {
 		}
 	}
 	cellWidth++
-
-	var buf bytes.Buffer
 
 	var (
 		//		formatRune   = "%[1]*c"
@@ -36,6 +34,7 @@ func PrintableMatrix(costs Costs, a, b []rune, prefix string) string {
 
 	empty := fmt.Sprintf(formatRune, cellWidth, '.')
 
+	var buf bytes.Buffer
 	buf.WriteString(prefix)
 	buf.WriteString(empty)
 	buf.WriteString(empty)
@@ -76,7 +75,7 @@ func digitsNumber(x, base int) int {
 	}
 	var n int
 	if x < 0 {
-		n++ // sign
+		n++ // negative sign
 		x = -x
 	}
 	for x > 0 {

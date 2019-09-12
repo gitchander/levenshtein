@@ -1,82 +1,43 @@
 package levenshtein
 
-// It works too slowly
-func Recursive(p *Params) int {
-	return recursiveDistance(p, p.LenA, p.LenB)
+// Levenshtein distance
+
+// https://en.wikipedia.org/wiki/Levenshtein_distance
+
+type Interface interface {
+	Len(k int) int // k = [0, 1]
+	Match(i, j int) bool
 }
 
-func recursiveDistance(p *Params, i, j int) int {
-	if j == 0 {
-		return i * p.DelCost
-	}
-	if i == 0 {
-		return j * p.InsCost
-	}
-	return minInt3(
-		recursiveDistance(p, i-1, j)+p.DelCost,              // (i-1, j) - Delete
-		recursiveDistance(p, i, j-1)+p.InsCost,              // (i, j-1) - Insert
-		recursiveDistance(p, i-1, j-1)+calcSubCost(p, i, j), // (i-1, j-1) - Substitution
-	)
+func Distance(v Interface) int {
+	return DistanceCosts(v, DefaultCosts)
 }
 
-func MakeMatrix(p *Params) [][]int {
+func DistanceCosts(v Interface, cs Costs) int {
+	if v.Len(0) < v.Len(1) {
+		return distanceByLen0(v, cs)
+	}
+	return distanceByLen1(v, cs)
+}
 
+func distanceByLen0(v Interface, cs Costs) int {
 	var (
-		ni = p.LenA + 1
-		nj = p.LenB + 1
-	)
-
-	var ssd = make([][]int, ni)
-	for i := 0; i < ni; i++ {
-		ssd[i] = make([]int, nj)
-	}
-
-	for i := 0; i < ni; i++ {
-		ssd[i][0] = i * p.DelCost
-	}
-	for j := 0; j < nj; j++ {
-		ssd[0][j] = j * p.InsCost
-	}
-
-	for i := 1; i < ni; i++ {
-		for j := 1; j < nj; j++ {
-			ssd[i][j] = minInt3(
-				ssd[i-1][j]+p.DelCost,              // (i-1, j) - Delete
-				ssd[i][j-1]+p.InsCost,              // (i, j-1) - Insert
-				ssd[i-1][j-1]+calcSubCost(p, i, j), // (i-1, j-1) - Substitution
-			)
-		}
-	}
-
-	return ssd
-}
-
-// It is main function
-func Distance(p *Params) int {
-	if p.LenA < p.LenB {
-		return distanceLenA(p)
-	}
-	return distanceLenB(p)
-}
-
-func distanceLenA(p *Params) int {
-	var (
-		ni = p.LenA + 1
-		nj = p.LenB + 1
+		ni = v.Len(0) + 1
+		nj = v.Len(1) + 1
 	)
 	vis := make([]int, ni)
 	for i := 0; i < ni; i++ {
-		vis[i] = i * p.DelCost
+		vis[i] = i * cs.DelCost
 	}
 	for j := 1; j < nj; j++ {
 		vi := vis[0]
-		vis[0] = j * p.InsCost
+		vis[0] = j * cs.InsCost
 		for i := 1; i < ni; i++ {
 			temp := vis[i]
 			vis[i] = minInt3(
-				vis[i-1]+p.DelCost,      // (i-1, j) - Delete
-				vis[i]+p.InsCost,        // (i, j-1) - Insert
-				vi+calcSubCost(p, i, j), // (i-1, j-1) - Substitution
+				vis[i-1]+cs.DelCost,         // (i-1, j) - Delete
+				vis[i]+cs.InsCost,           // (i, j-1) - Insert
+				vi+calcSubCost(v, i, j, cs), // (i-1, j-1) - Substitution
 			)
 			vi = temp
 		}
@@ -84,24 +45,24 @@ func distanceLenA(p *Params) int {
 	return vis[ni-1]
 }
 
-func distanceLenB(p *Params) int {
+func distanceByLen1(v Interface, cs Costs) int {
 	var (
-		ni = p.LenA + 1
-		nj = p.LenB + 1
+		ni = v.Len(0) + 1
+		nj = v.Len(1) + 1
 	)
 	vjs := make([]int, nj)
 	for j := 0; j < nj; j++ {
-		vjs[j] = j * p.InsCost
+		vjs[j] = j * cs.InsCost
 	}
 	for i := 1; i < ni; i++ {
 		vj := vjs[0]
-		vjs[0] = i * p.DelCost
+		vjs[0] = i * cs.DelCost
 		for j := 1; j < nj; j++ {
 			temp := vjs[j]
 			vjs[j] = minInt3(
-				vjs[j]+p.DelCost,        // (i-1, j) - Delete
-				vjs[j-1]+p.InsCost,      // (i, j-1) - Insert
-				vj+calcSubCost(p, i, j), // (i-1, j-1) - Substitution
+				vjs[j]+cs.DelCost,           // (i-1, j) - Delete
+				vjs[j-1]+cs.InsCost,         // (i, j-1) - Insert
+				vj+calcSubCost(v, i, j, cs), // (i-1, j-1) - Substitution
 			)
 			vj = temp
 		}
@@ -109,11 +70,11 @@ func distanceLenB(p *Params) int {
 	return vjs[nj-1]
 }
 
-func calcSubCost(p *Params, i, j int) int {
-	if p.Match(i-1, j-1) {
+func calcSubCost(v Interface, i, j int, cs Costs) int {
+	if v.Match(i-1, j-1) {
 		return 0
 	}
-	return p.SubCost
+	return cs.SubCost
 }
 
 func minInt3(a, b, c int) int {

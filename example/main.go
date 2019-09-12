@@ -11,7 +11,7 @@ import (
 
 func main() {
 	exampleSamples()
-	exampleParams()
+	exampleDistanceCosts()
 	examplePrintMatrix()
 	exampleRecursive()
 	exampleFields()
@@ -56,34 +56,26 @@ func exampleSamples() {
 	}
 }
 
-func exampleParams() {
-	fmt.Println("Example Params:")
+func exampleDistanceCosts() {
+	fmt.Println("Example Distance Costs:")
 	var (
 		sample = samples[0]
 
 		a = []rune(sample[0])
 		b = []rune(sample[1])
 	)
-
-	p := &lev.Params{
-		Costs: lev.Costs{
-			DelCost: 1,
-			InsCost: 1,
-			SubCost: 1,
-		},
-		LenA: len(a),
-		LenB: len(b),
-		Match: func(i, j int) bool {
-			return a[i] == b[j]
-		},
+	v := lev.RuneSlices{a, b}
+	cs := lev.Costs{
+		DelCost: 1,
+		InsCost: 1,
+		SubCost: 1,
 	}
-
-	fmt.Println(lev.Distance(p))
+	fmt.Println(lev.DistanceCosts(v, cs))
 }
 
 func examplePrintMatrix() {
 	fmt.Println("Example Print Matrix:")
-	var costs = lev.Costs{
+	cs := lev.Costs{
 		DelCost: 1,
 		InsCost: 1,
 		SubCost: 1,
@@ -94,7 +86,7 @@ func examplePrintMatrix() {
 		a = []rune(sample[0])
 		b = []rune(sample[1])
 	)
-	fmt.Println(lev.PrintableMatrix(costs, a, b, ""))
+	fmt.Println(lev.PrintableMatrix(cs, a, b, ""))
 }
 
 func exampleRecursive() {
@@ -102,11 +94,11 @@ func exampleRecursive() {
 	var (
 		sample = samples[0]
 
-		a = sample[0]
-		b = sample[1]
+		a = []rune(sample[0])
+		b = []rune(sample[1])
 	)
-	p := lev.NewParamsStrings(a, b)
-	fmt.Println(lev.Recursive(p))
+	v := lev.RuneSlices{a, b}
+	fmt.Println(lev.Recursive(v))
 }
 
 func exampleFields() {
@@ -115,15 +107,8 @@ func exampleFields() {
 		a = strings.Fields("Computing the Levenshtein, distance is based on the observation that if we reserve")
 		b = strings.Fields("Computing the Levenshtein distance- is based on he observation that if we reserve.")
 	)
-	p := &lev.Params{
-		Costs: lev.DefaultCosts,
-		LenA:  len(a),
-		LenB:  len(b),
-		Match: func(i, j int) bool {
-			return a[i] == b[j]
-		},
-	}
-	fmt.Println(lev.Distance(p))
+	v := lev.StringSlices{a, b}
+	fmt.Println(lev.Distance(v))
 }
 
 func exampleBits() {
@@ -132,15 +117,8 @@ func exampleBits() {
 		a = parseBits("100101110101010100010111000111011010001010001111101011101011")
 		b = parseBits("100101110101010100010111000111011010001010001111101011101010")
 	)
-	p := &lev.Params{
-		Costs: lev.DefaultCosts,
-		LenA:  len(a),
-		LenB:  len(b),
-		Match: func(i, j int) bool {
-			return a[i] == b[j]
-		},
-	}
-	fmt.Println(lev.Distance(p))
+	v := lev.BoolSlices{a, b}
+	fmt.Println(lev.Distance(v))
 }
 
 func parseBits(s string) []bool {

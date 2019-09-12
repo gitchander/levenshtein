@@ -7,7 +7,7 @@ import (
 )
 
 func TestRandomSamples(t *testing.T) {
-	costs := Costs{
+	cs := Costs{
 		DelCost: 1,
 		InsCost: 1,
 		SubCost: 1,
@@ -29,18 +29,18 @@ func TestRandomSamples(t *testing.T) {
 				n := len(b)
 				if n == 0 {
 					b = insertRune(b, r.Intn(n+1), source[r.Intn(len(source))])
-					cost += costs.InsCost
+					cost += cs.InsCost
 				} else {
 					switch k := r.Intn(3); k {
 					case 0:
 						b = deleteRune(b, r.Intn(n))
-						cost += costs.DelCost
+						cost += cs.DelCost
 					case 1:
 						b = insertRune(b, r.Intn(n+1), source[r.Intn(len(source))])
-						cost += costs.InsCost
+						cost += cs.InsCost
 					case 2:
 						b = substituteRune(b, r.Intn(n), source[r.Intn(len(source))])
-						cost += costs.SubCost
+						cost += cs.SubCost
 					}
 				}
 			}
