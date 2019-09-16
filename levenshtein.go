@@ -33,13 +33,23 @@ func distanceByLen0(v Interface, cs Costs) int {
 		vi := vis[0]
 		vis[0] = j * cs.InsCost
 		for i := 1; i < ni; i++ {
-			temp := vis[i]
-			vis[i] = minInt3(
-				vis[i-1]+cs.DelCost,                     // (i-1, j) - Delete
-				vis[i]+cs.InsCost,                       // (i, j-1) - Insert
-				vi+calcSubCost(v, i-1, j-1, cs.SubCost), // (i-1, j-1) - Substitution
-			)
-			vi = temp
+
+			// (i-1, j) - Delete
+			delCost := vis[i-1] + cs.DelCost
+
+			// (i, j-1) - Insert
+			insCost := vis[i] + cs.InsCost
+
+			// (i-1, j-1) - Substitution
+			subCost := vi
+			if !(v.Match(i-1, j-1)) {
+				subCost += cs.SubCost
+			}
+
+			min := minInt3(delCost, insCost, subCost)
+
+			vi = vis[i]
+			vis[i] = min
 		}
 	}
 	return vis[ni-1]
@@ -58,23 +68,26 @@ func distanceByLen1(v Interface, cs Costs) int {
 		vj := vjs[0]
 		vjs[0] = i * cs.DelCost
 		for j := 1; j < nj; j++ {
-			temp := vjs[j]
-			vjs[j] = minInt3(
-				vjs[j]+cs.DelCost,                       // (i-1, j) - Delete
-				vjs[j-1]+cs.InsCost,                     // (i, j-1) - Insert
-				vj+calcSubCost(v, i-1, j-1, cs.SubCost), // (i-1, j-1) - Substitution
-			)
-			vj = temp
+
+			// (i-1, j) - Delete
+			delCost := vjs[j] + cs.DelCost
+
+			// (i, j-1) - Insert
+			insCost := vjs[j-1] + cs.InsCost
+
+			// (i-1, j-1) - Substitution
+			subCost := vj
+			if !(v.Match(i-1, j-1)) {
+				subCost += cs.SubCost
+			}
+
+			min := minInt3(delCost, insCost, subCost)
+
+			vj = vjs[j]
+			vjs[j] = min
 		}
 	}
 	return vjs[nj-1]
-}
-
-func calcSubCost(v Interface, i, j int, subCost int) int {
-	if v.Match(i, j) {
-		return 0
-	}
-	return subCost
 }
 
 func minInt3(a, b, c int) int {
