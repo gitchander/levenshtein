@@ -8,7 +8,6 @@ import (
 )
 
 // Levenshtein distance
-
 // https://en.wikipedia.org/wiki/Levenshtein_distance
 
 func main() {
