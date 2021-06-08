@@ -13,8 +13,8 @@ func main() {
 		line2 = "one two three"
 	)
 	var (
-		a = strings.Split(line1, " ")
-		b = strings.Split(line2, " ")
+		a = strings.Fields(line1)
+		b = strings.Fields(line2)
 	)
 	distance := lev.Distance(lev.StringSlices{a, b})
 	fmt.Printf("the levenshtein distance between %q and %q = %d\n", a, b, distance)

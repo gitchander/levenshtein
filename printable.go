@@ -19,7 +19,7 @@ func PrintableMatrix(cs Costs, a, b []rune, prefix string) string {
 	var cellWidth int
 	for _, sd := range ssd {
 		for _, d := range sd {
-			cellWidth = maxInt2(cellWidth, digitsNumber(d, 10))
+			cellWidth = maxInt2(cellWidth, numberOfDigits(d, 10))
 		}
 	}
 	cellWidth++
@@ -69,7 +69,7 @@ func maxInt2(a, b int) int {
 	return b
 }
 
-func digitsNumber(x, base int) int {
+func numberOfDigits(x, base int) int {
 	if x == 0 {
 		return 1
 	}
