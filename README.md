@@ -135,8 +135,8 @@ type PersonSlices [2][]Person
 
 var _ lev.Interface = PersonSlices{}
 
-func (p PersonSlices) Len(k int) int {
-	return len(p[k])
+func (p PersonSlices) Lens() (ni, nj int) {
+	return len(p[0]), len(p[1])
 }
 
 func (p PersonSlices) Match(i, j int) bool {
