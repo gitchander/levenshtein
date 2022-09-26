@@ -2,7 +2,8 @@ package levenshtein
 
 func Recursive(v Interface) int {
 	cs := DefaultCosts
-	return recursiveDistance(v, &cs, v.Len(0), v.Len(1))
+	ni, nj := v.Lens()
+	return recursiveDistance(v, &cs, ni, nj)
 }
 
 func recursiveDistance(v Interface, cs *Costs, i, j int) int {

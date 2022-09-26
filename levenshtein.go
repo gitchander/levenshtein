@@ -5,7 +5,7 @@ package levenshtein
 // https://en.wikipedia.org/wiki/Levenshtein_distance
 
 type Interface interface {
-	Len(k int) int // k = [0, 1]
+	Lens() (ni, nj int)
 	Match(i, j int) bool
 }
 
@@ -14,17 +14,18 @@ func Distance(v Interface) int {
 }
 
 func DistanceCosts(v Interface, cs Costs) int {
-	if v.Len(0) < v.Len(1) {
+	ni, nj := v.Lens()
+	if ni < nj {
 		return distanceByLen0(v, cs)
 	}
 	return distanceByLen1(v, cs)
 }
 
 func distanceByLen0(v Interface, cs Costs) int {
-	var (
-		ni = v.Len(0) + 1
-		nj = v.Len(1) + 1
-	)
+
+	ni, nj := v.Lens()
+	ni, nj = ni+1, nj+1
+
 	vis := make([]int, ni)
 	for i := 0; i < ni; i++ {
 		vis[i] = i * cs.DelCost
@@ -56,10 +57,10 @@ func distanceByLen0(v Interface, cs Costs) int {
 }
 
 func distanceByLen1(v Interface, cs Costs) int {
-	var (
-		ni = v.Len(0) + 1
-		nj = v.Len(1) + 1
-	)
+
+	ni, nj := v.Lens()
+	ni, nj = ni+1, nj+1
+
 	vjs := make([]int, nj)
 	for j := 0; j < nj; j++ {
 		vjs[j] = j * cs.InsCost

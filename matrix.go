@@ -2,10 +2,8 @@ package levenshtein
 
 func MakeMatrix(v Interface, cs Costs) [][]int {
 
-	var (
-		ni = v.Len(0) + 1
-		nj = v.Len(1) + 1
-	)
+	ni, nj := v.Lens()
+	ni, nj = ni+1, nj+1
 
 	var ssd = make([][]int, ni)
 	for i := 0; i < ni; i++ {

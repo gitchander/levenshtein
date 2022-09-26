@@ -106,7 +106,7 @@ func substituteRune(rs []rune, i int, r rune) []rune {
 	return rs
 }
 
-func TestLen0Len1(t *testing.T) {
+func TestLens(t *testing.T) {
 
 	r := random.NewRandNow()
 

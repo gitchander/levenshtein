@@ -11,10 +11,8 @@ func PrintableMatrix(cs Costs, a, b []rune, prefix string) string {
 
 	ssd := MakeMatrix(v, cs)
 
-	var (
-		ni = v.Len(0) + 1
-		nj = v.Len(1) + 1
-	)
+	ni, nj := v.Lens()
+	ni, nj = ni+1, nj+1
 
 	var cellWidth int
 	for _, sd := range ssd {

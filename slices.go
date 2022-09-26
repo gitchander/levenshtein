@@ -5,8 +5,8 @@ type RuneSlices [2][]rune
 
 var _ Interface = RuneSlices{}
 
-func (p RuneSlices) Len(k int) int {
-	return len(p[k])
+func (p RuneSlices) Lens() (ni, nj int) {
+	return len(p[0]), len(p[1])
 }
 
 func (p RuneSlices) Match(i, j int) bool {
@@ -18,8 +18,8 @@ type StringSlices [2][]string
 
 var _ Interface = StringSlices{}
 
-func (p StringSlices) Len(k int) int {
-	return len(p[k])
+func (p StringSlices) Lens() (ni, nj int) {
+	return len(p[0]), len(p[1])
 }
 
 func (p StringSlices) Match(i, j int) bool {
@@ -31,8 +31,8 @@ type BoolSlices [2][]bool
 
 var _ Interface = BoolSlices{}
 
-func (p BoolSlices) Len(k int) int {
-	return len(p[k])
+func (p BoolSlices) Lens() (ni, nj int) {
+	return len(p[0]), len(p[1])
 }
 
 func (p BoolSlices) Match(i, j int) bool {
