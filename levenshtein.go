@@ -9,6 +9,19 @@ type Interface interface {
 	Match(i, j int) bool
 }
 
+// Weights
+type Costs struct {
+	InsCost int // Insert cost
+	DelCost int // Delete cost
+	SubCost int // Substitution cost
+}
+
+var DefaultCosts = Costs{
+	InsCost: 1,
+	DelCost: 1,
+	SubCost: 1,
+}
+
 func Distance(v Interface) int {
 	return DistanceCosts(v, DefaultCosts)
 }
@@ -24,71 +37,67 @@ func DistanceCosts(v Interface, cs Costs) int {
 func distanceByLen0(v Interface, cs Costs) int {
 
 	ni, nj := v.Lens()
-	ni, nj = ni+1, nj+1
 
-	vis := make([]int, ni)
-	for i := 0; i < ni; i++ {
-		vis[i] = i * cs.DelCost
+	row := make([]int, (ni + 1))
+	for i := 0; i <= ni; i++ {
+		row[i] = i * cs.DelCost
 	}
-	for j := 1; j < nj; j++ {
-		vi := vis[0]
-		vis[0] = j * cs.InsCost
-		for i := 1; i < ni; i++ {
+
+	for j := 1; j <= nj; j++ {
+		prevDiag := row[0]
+		row[0] = j * cs.InsCost
+		for i := 1; i <= ni; i++ {
 
 			// (i-1, j) - Delete
-			delCost := vis[i-1] + cs.DelCost
+			delCost := row[i-1] + cs.DelCost
 
 			// (i, j-1) - Insert
-			insCost := vis[i] + cs.InsCost
+			insCost := row[i] + cs.InsCost
 
 			// (i-1, j-1) - Substitution
-			subCost := vi
+			subCost := prevDiag
 			if !(v.Match(i-1, j-1)) {
 				subCost += cs.SubCost
 			}
 
-			min := minInt3(delCost, insCost, subCost)
-
-			vi = vis[i]
-			vis[i] = min
+			prevDiag = row[i]
+			row[i] = minInt3(delCost, insCost, subCost)
 		}
 	}
-	return vis[ni-1]
+	return row[ni]
 }
 
 func distanceByLen1(v Interface, cs Costs) int {
 
 	ni, nj := v.Lens()
-	ni, nj = ni+1, nj+1
 
-	vjs := make([]int, nj)
-	for j := 0; j < nj; j++ {
-		vjs[j] = j * cs.InsCost
+	row := make([]int, (nj + 1))
+	for j := 0; j <= nj; j++ {
+		row[j] = j * cs.InsCost
 	}
-	for i := 1; i < ni; i++ {
-		vj := vjs[0]
-		vjs[0] = i * cs.DelCost
-		for j := 1; j < nj; j++ {
+
+	for i := 1; i <= ni; i++ {
+		prevDiag := row[0]
+		row[0] = i * cs.DelCost
+		for j := 1; j <= nj; j++ {
 
 			// (i-1, j) - Delete
-			delCost := vjs[j] + cs.DelCost
+			delCost := row[j] + cs.DelCost
 
 			// (i, j-1) - Insert
-			insCost := vjs[j-1] + cs.InsCost
+			insCost := row[j-1] + cs.InsCost
 
 			// (i-1, j-1) - Substitution
-			subCost := vj
+			subCost := prevDiag
 			if !(v.Match(i-1, j-1)) {
 				subCost += cs.SubCost
 			}
 
-			min := minInt3(delCost, insCost, subCost)
-
-			vj = vjs[j]
-			vjs[j] = min
+			prevDiag = row[j]
+			row[j] = minInt3(delCost, insCost, subCost)
 		}
 	}
-	return vjs[nj-1]
+	return row[nj]
 }
 
 func minInt3(a, b, c int) int {

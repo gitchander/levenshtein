@@ -5,14 +5,13 @@ import (
 	"fmt"
 )
 
-func PrintableMatrix(cs Costs, a, b []rune, prefix string) string {
+func PrintableMatrix(a, b []rune, cs Costs, prefix string) string {
 
 	v := RuneSlices{a, b}
 
 	ssd := MakeMatrix(v, cs)
 
 	ni, nj := v.Lens()
-	ni, nj = ni+1, nj+1
 
 	var cellWidth int
 	for _, sd := range ssd {
@@ -36,22 +35,22 @@ func PrintableMatrix(cs Costs, a, b []rune, prefix string) string {
 	buf.WriteString(prefix)
 	buf.WriteString(empty)
 	buf.WriteString(empty)
-	for j := 1; j < nj; j++ {
+	for j := 1; j <= nj; j++ {
 		fmt.Fprintf(&buf, formatRune, cellWidth, b[j-1])
 	}
 	buf.WriteByte('\n')
 
 	buf.WriteString(prefix)
 	buf.WriteString(empty)
-	for j := 0; j < nj; j++ {
+	for j := 0; j <= nj; j++ {
 		fmt.Fprintf(&buf, formatNumber, cellWidth, ssd[0][j])
 	}
 	buf.WriteByte('\n')
 
-	for i := 1; i < ni; i++ {
+	for i := 1; i <= ni; i++ {
 		buf.WriteString(prefix)
 		fmt.Fprintf(&buf, formatRune, cellWidth, a[i-1])
-		for j := 0; j < nj; j++ {
+		for j := 0; j <= nj; j++ {
 			fmt.Fprintf(&buf, formatNumber, cellWidth, ssd[i][j])
 		}
 		buf.WriteByte('\n')

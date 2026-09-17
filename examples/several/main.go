@@ -83,7 +83,7 @@ func examplePrintMatrix() {
 		a = []rune(sample[0])
 		b = []rune(sample[1])
 	)
-	fmt.Println(lev.PrintableMatrix(cs, a, b, ""))
+	fmt.Println(lev.PrintableMatrix(a, b, cs, ""))
 }
 
 func exampleRecursive() {
