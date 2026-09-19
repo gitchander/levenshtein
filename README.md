@@ -1,22 +1,24 @@
-# levenshtein
-An implementation of the Levenshtein distance for Golang
+# Levenshtein
 
-Sources
--------
+An implementation of the Levenshtein distance for Go.
 
-[Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance)
+## Sources
 
-[Golang](https://golang.org/)
+- [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance)
 
-Install
--------
+- [Go Programming Language](https://golang.org/)
 
-```
+## Installation
+
+```bash
 go get github.com/gitchander/levenshtein
 ```
 
 Examples
 --------
+
+Basic string distance
+---------------------
 
 ```go
 package main
@@ -33,17 +35,17 @@ func main() {
 		b = "polynomial"
 	)
 	distance := lev.Strings(a, b)
-	fmt.Printf("the levenshtein distance between %q and %q = %d\n", a, b, distance)
+	fmt.Printf("the levenshtein distance = %d\n", distance)
 }
 ```
 
 result:
 ```
-the levenshtein distance between "exponential" and "polynomial" = 6
+the levenshtein distance = 6
 ```
 
-Example the distance by words:
-------------------------------
+Distance between word slices
+----------------------------
 ```go
 package main
 
@@ -63,17 +65,18 @@ func main() {
 		a = strings.Fields(line1)
 		b = strings.Fields(line2)
 	)
-	distance := lev.Distance(lev.StringSlices{a, b})
-	fmt.Printf("the levenshtein distance between %q and %q = %d\n", a, b, distance)
+	distance := lev.StringSlices(a, b)
+	fmt.Printf("the levenshtein distance = %d\n", distance)
 }
 ```
 
 result:
 ```
-the levenshtein distance between ["one" "two" "three" "four"] and ["one" "two" "three"] = 1
+the levenshtein distance = 1
 ```
 
-Example with print matrix:
+Printing the distance matrix
+----------------------------
 ```go
 package main
 
@@ -89,7 +92,7 @@ func main() {
 		b = []rune("kitten")
 	)
 	costs := lev.DefaultCosts
-	fmt.Print(lev.PrintableMatrix(costs, a, b, ""))
+	fmt.Print(lev.PrintableMatrix(a, b, costs, ""))
 }
 ```
 
@@ -106,8 +109,8 @@ n 6 6 5 4 3 3 2
 g 7 7 6 5 4 4 3 
 ```
 
-Example the distance by interfaces:
-------------------------------
+Using custom types via the Interface
+------------------------------------
 ```go
 package main
 
@@ -117,30 +120,30 @@ import (
 	lev "github.com/gitchander/levenshtein"
 )
 
-func main() {
-	var (
-		a = []Person{{"one", 1}, {"two", 2}, {"three", 3}, {"four", 4}}
-		b = []Person{{"one", 1}, {"two", 2}, {"three", 3}}
-	)
-	distance := lev.Distance(PersonSlices{a, b})
-	fmt.Printf("the levenshtein distance = %d\n", distance)
-}
-
 type Person struct {
 	Name string
 	Age  int
 }
 
-type PersonSlices [2][]Person
+type PersonPair [2][]Person
 
-var _ lev.Interface = PersonSlices{}
+var _ lev.Interface = PersonPair{}
 
-func (p PersonSlices) Lens() (ni, nj int) {
+func (p PersonPair) Lens() (ni, nj int) {
 	return len(p[0]), len(p[1])
 }
 
-func (p PersonSlices) Match(i, j int) bool {
+func (p PersonPair) Match(i, j int) bool {
 	return p[0][i] == p[1][j]
+}
+
+func main() {
+	var (
+		a = []Person{{"one", 1}, {"two", 2}, {"three", 3}, {"four", 4}}
+		b = []Person{{"one", 1}, {"two", 2}, {"three", 3}}
+	)
+	distance := lev.Distance(PersonPair{a, b})
+	fmt.Printf("the levenshtein distance = %d\n", distance)
 }
 ```
 

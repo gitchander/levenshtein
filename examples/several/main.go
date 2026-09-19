@@ -65,7 +65,7 @@ func exampleDistanceCosts() {
 		a = []rune(sample[0])
 		b = []rune(sample[1])
 	)
-	v := lev.RuneSlices{a, b}
+	v := lev.RunePair{a, b}
 	cs := lev.Costs{
 		DelCost: 1,
 		InsCost: 1,
@@ -87,15 +87,15 @@ func examplePrintMatrix() {
 }
 
 func exampleRecursive() {
-	fmt.Println("Example Recursive:")
+	fmt.Println("Example NaiveRecursive:")
 	var (
 		sample = samples[0]
 
 		a = []rune(sample[0])
 		b = []rune(sample[1])
 	)
-	v := lev.RuneSlices{a, b}
-	fmt.Println(lev.Recursive(v))
+	v := lev.RunePair{a, b}
+	fmt.Println(lev.NaiveRecursive(v))
 }
 
 func exampleFields() {
@@ -104,8 +104,7 @@ func exampleFields() {
 		a = strings.Fields("Computing the Levenshtein, distance is based on the observation that if we reserve")
 		b = strings.Fields("Computing the Levenshtein distance- is based on he observation that if we reserve.")
 	)
-	v := lev.StringSlices{a, b}
-	fmt.Println(lev.Distance(v))
+	fmt.Println(lev.StringSlices(a, b))
 }
 
 func exampleBits() {
@@ -114,8 +113,7 @@ func exampleBits() {
 		a = parseBits("100101110101010100010111000111011010001010001111101011101011")
 		b = parseBits("100101110101010100010111000111011010001010001111101011101010")
 	)
-	v := lev.BoolSlices{a, b}
-	fmt.Println(lev.Distance(v))
+	fmt.Println(lev.BoolSlices(a, b))
 }
 
 func parseBits(s string) []bool {
@@ -132,4 +130,15 @@ func parseBits(s string) []bool {
 		}
 	}
 	return bs
+}
+
+func exampleRunes() {
+	var (
+		sample = samples[0]
+
+		a = []rune(sample[0])
+		b = []rune(sample[1])
+	)
+	distance := lev.Distance(lev.RunePair{a, b})
+	fmt.Println(distance)
 }

@@ -11,14 +11,14 @@ type Interface interface {
 
 // Weights
 type Costs struct {
-	InsCost int // Insert cost
 	DelCost int // Delete cost
+	InsCost int // Insert cost
 	SubCost int // Substitution cost
 }
 
 var DefaultCosts = Costs{
-	InsCost: 1,
 	DelCost: 1,
+	InsCost: 1,
 	SubCost: 1,
 }
 
@@ -38,21 +38,21 @@ func distanceByLen0(v Interface, cs Costs) int {
 
 	ni, nj := v.Lens()
 
-	row := make([]int, (ni + 1))
+	buf := make([]int, (ni + 1))
 	for i := 0; i <= ni; i++ {
-		row[i] = i * cs.DelCost
+		buf[i] = i * cs.DelCost
 	}
 
 	for j := 1; j <= nj; j++ {
-		prevDiag := row[0]
-		row[0] = j * cs.InsCost
+		prevDiag := buf[0]
+		buf[0] = j * cs.InsCost
 		for i := 1; i <= ni; i++ {
 
 			// (i-1, j) - Delete
-			delCost := row[i-1] + cs.DelCost
+			delCost := buf[i-1] + cs.DelCost
 
 			// (i, j-1) - Insert
-			insCost := row[i] + cs.InsCost
+			insCost := buf[i] + cs.InsCost
 
 			// (i-1, j-1) - Substitution
 			subCost := prevDiag
@@ -60,32 +60,32 @@ func distanceByLen0(v Interface, cs Costs) int {
 				subCost += cs.SubCost
 			}
 
-			prevDiag = row[i]
-			row[i] = minInt3(delCost, insCost, subCost)
+			prevDiag = buf[i]
+			buf[i] = minInt3(delCost, insCost, subCost)
 		}
 	}
-	return row[ni]
+	return buf[ni]
 }
 
 func distanceByLen1(v Interface, cs Costs) int {
 
 	ni, nj := v.Lens()
 
-	row := make([]int, (nj + 1))
+	buf := make([]int, (nj + 1))
 	for j := 0; j <= nj; j++ {
-		row[j] = j * cs.InsCost
+		buf[j] = j * cs.InsCost
 	}
 
 	for i := 1; i <= ni; i++ {
-		prevDiag := row[0]
-		row[0] = i * cs.DelCost
+		prevDiag := buf[0]
+		buf[0] = i * cs.DelCost
 		for j := 1; j <= nj; j++ {
 
 			// (i-1, j) - Delete
-			delCost := row[j] + cs.DelCost
+			delCost := buf[j] + cs.DelCost
 
 			// (i, j-1) - Insert
-			insCost := row[j-1] + cs.InsCost
+			insCost := buf[j-1] + cs.InsCost
 
 			// (i-1, j-1) - Substitution
 			subCost := prevDiag
@@ -93,11 +93,11 @@ func distanceByLen1(v Interface, cs Costs) int {
 				subCost += cs.SubCost
 			}
 
-			prevDiag = row[j]
-			row[j] = minInt3(delCost, insCost, subCost)
+			prevDiag = buf[j]
+			buf[j] = minInt3(delCost, insCost, subCost)
 		}
 	}
-	return row[nj]
+	return buf[nj]
 }
 
 func minInt3(a, b, c int) int {

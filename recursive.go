@@ -1,6 +1,11 @@
 package levenshtein
 
-func Recursive(v Interface) int {
+// NaiveRecursive calculates the Levenshtein distance using a naive recursive approach.
+//
+// WARNING: This function has an exponential time complexity O(3^(m+n)) and does not
+// use memoization. It will block on strings longer than 10-15 characters.
+// Use Distance instead for production code.
+func NaiveRecursive(v Interface) int {
 	cs := DefaultCosts
 	ni, nj := v.Lens()
 	return recursiveDistance(v, &cs, ni, nj)

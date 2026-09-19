@@ -12,5 +12,5 @@ func main() {
 		b = "polynomial"
 	)
 	distance := lev.Strings(a, b)
-	fmt.Printf("the levenshtein distance between %q and %q = %d\n", a, b, distance)
+	fmt.Printf("the levenshtein distance = %d\n", distance)
 }

@@ -56,7 +56,7 @@ func TestRandomSamples(t *testing.T) {
 				}
 			}
 		}
-		res := Runes(a, b)
+		res := RuneSlices(a, b)
 		// if res != cost {
 		// 	t.Logf("(%d != %d), ['%s', '%s']", res, cost, string(a), string(b))
 		// }
@@ -134,7 +134,7 @@ func TestLens(t *testing.T) {
 			b = m.Mutate(b)
 		}
 
-		rs := RuneSlices{a, b}
+		rs := RunePair{a, b}
 
 		var (
 			d0 = distanceByLen0(rs, cs)

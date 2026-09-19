@@ -7,7 +7,7 @@ import (
 
 func PrintableMatrix(a, b []rune, cs Costs, prefix string) string {
 
-	v := RuneSlices{a, b}
+	v := RunePair{a, b}
 
 	ssd := MakeMatrix(v, cs)
 

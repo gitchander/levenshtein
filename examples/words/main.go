@@ -16,6 +16,6 @@ func main() {
 		a = strings.Fields(line1)
 		b = strings.Fields(line2)
 	)
-	distance := lev.Distance(lev.StringSlices{a, b})
-	fmt.Printf("the levenshtein distance between %q and %q = %d\n", a, b, distance)
+	distance := lev.StringSlices(a, b)
+	fmt.Printf("the levenshtein distance = %d\n", distance)
 }

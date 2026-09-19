@@ -1,3 +1,3 @@
 module github.com/gitchander/levenshtein
 
-go 1.19
+go 1.27

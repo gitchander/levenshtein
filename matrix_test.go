@@ -5,24 +5,25 @@ import (
 	"testing"
 )
 
-type matrixSample struct {
-	a, b  []rune
+type testSample struct {
+	a, b  string
 	costs Costs
 
-	result [][]int
+	distance int
+	matrix   [][]int
 }
 
 func TestMatrixSamples(t *testing.T) {
-	samples := []matrixSample{
+	samples := []testSample{
 		{
-			a: []rune("sitting"),
-			b: []rune("kitten"),
+			a: "sitting",
+			b: "kitten",
 			costs: Costs{
-				InsCost: 1,
 				DelCost: 1,
+				InsCost: 1,
 				SubCost: 1,
 			},
-			result: [][]int{
+			matrix: [][]int{
 				{0, 1, 2, 3, 4, 5, 6},
 				{1, 1, 2, 3, 4, 5, 6},
 				{2, 2, 1, 2, 3, 4, 5},
@@ -32,16 +33,17 @@ func TestMatrixSamples(t *testing.T) {
 				{6, 6, 5, 4, 3, 3, 2},
 				{7, 7, 6, 5, 4, 4, 3},
 			},
+			distance: 3,
 		},
 		{
-			a: []rune("Sunday"),
-			b: []rune("Saturday"),
+			a: "Sunday",
+			b: "Saturday",
 			costs: Costs{
-				InsCost: 1,
 				DelCost: 1,
+				InsCost: 1,
 				SubCost: 1,
 			},
-			result: [][]int{
+			matrix: [][]int{
 				{0, 1, 2, 3, 4, 5, 6, 7, 8},
 				{1, 0, 1, 2, 3, 4, 5, 6, 7},
 				{2, 1, 1, 2, 2, 3, 4, 5, 6},
@@ -50,16 +52,17 @@ func TestMatrixSamples(t *testing.T) {
 				{5, 4, 3, 4, 4, 4, 4, 3, 4},
 				{6, 5, 4, 4, 5, 5, 5, 4, 3},
 			},
+			distance: 3,
 		},
 		{
-			a: []rune("hello"),
-			b: []rune("world"),
+			a: "hello",
+			b: "world",
 			costs: Costs{
-				InsCost: 1,
 				DelCost: 1,
+				InsCost: 1,
 				SubCost: 1,
 			},
-			result: [][]int{
+			matrix: [][]int{
 				{0, 1, 2, 3, 4, 5},
 				{1, 1, 2, 3, 4, 5},
 				{2, 2, 2, 3, 4, 5},
@@ -67,16 +70,17 @@ func TestMatrixSamples(t *testing.T) {
 				{4, 4, 4, 4, 3, 4},
 				{5, 5, 4, 5, 4, 4},
 			},
+			distance: 4,
 		},
 		{
-			a: []rune("AACGCA"),
-			b: []rune("GAGCTA"),
+			a: "AACGCA",
+			b: "GAGCTA",
 			costs: Costs{
-				InsCost: 1,
 				DelCost: 1,
+				InsCost: 1,
 				SubCost: 2,
 			},
-			result: [][]int{
+			matrix: [][]int{
 				{0, 1, 2, 3, 4, 5, 6},
 				{1, 2, 1, 2, 3, 4, 5},
 				{2, 3, 2, 3, 4, 5, 4},
@@ -85,16 +89,17 @@ func TestMatrixSamples(t *testing.T) {
 				{5, 4, 5, 4, 3, 4, 5},
 				{6, 5, 4, 5, 4, 5, 4},
 			},
+			distance: 4,
 		},
 		{
-			a: []rune("exponential"),
-			b: []rune("polynomial"),
+			a: "exponential",
+			b: "polynomial",
 			costs: Costs{
-				InsCost: 1,
 				DelCost: 1,
+				InsCost: 1,
 				SubCost: 1,
 			},
-			result: [][]int{
+			matrix: [][]int{
 				{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
 				{1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
 				{2, 2, 2, 3, 4, 5, 6, 7, 8, 9, 10},
@@ -108,14 +113,28 @@ func TestMatrixSamples(t *testing.T) {
 				{10, 9, 8, 8, 8, 7, 7, 7, 7, 6, 7},
 				{11, 10, 9, 8, 9, 8, 8, 8, 8, 7, 6},
 			},
+			distance: 6,
 		},
 	}
 	for i, sample := range samples {
-		var (
-			v = RuneSlices{sample.a, sample.b}
 
+		v := RunePair{
+			[]rune(sample.a),
+			[]rune(sample.b),
+		}
+
+		var (
+			haveDistance = DistanceCosts(v, sample.costs)
+			wantDistance = sample.distance
+		)
+		if haveDistance != wantDistance {
+			t.Fatalf("sample [%d]: invalid distance: have %d, want %d", i,
+				haveDistance, wantDistance)
+		}
+
+		var (
 			haveMatrix = MakeMatrix(v, sample.costs)
-			wantMatrix = sample.result
+			wantMatrix = sample.matrix
 		)
 		if !(reflect.DeepEqual(haveMatrix, wantMatrix)) {
 			t.Fatalf("sample [%d]: matrixes are not equal", i)

@@ -1,53 +1,71 @@
 package levenshtein
 
-// ------------------------------------------------------------------------------
-type RuneSlices [2][]rune
+//------------------------------------------------------------------------------
 
-var _ Interface = RuneSlices{}
+// RunePair (alternative names: RuneSlices, RunesPair, RuneSlicePair)
 
-func (p RuneSlices) Lens() (ni, nj int) {
+type RunePair [2][]rune
+
+var _ Interface = RunePair{}
+
+func (p RunePair) Lens() (ni, nj int) {
 	return len(p[0]), len(p[1])
 }
 
-func (p RuneSlices) Match(i, j int) bool {
+func (p RunePair) Match(i, j int) bool {
 	return p[0][i] == p[1][j]
 }
 
-// ------------------------------------------------------------------------------
-type StringSlices [2][]string
+//------------------------------------------------------------------------------
 
-var _ Interface = StringSlices{}
+// StringPair (alternative names: StringSlices, StringsPair, StringSlicePair)
 
-func (p StringSlices) Lens() (ni, nj int) {
+type StringPair [2][]string
+
+var _ Interface = StringPair{}
+
+func (p StringPair) Lens() (ni, nj int) {
 	return len(p[0]), len(p[1])
 }
 
-func (p StringSlices) Match(i, j int) bool {
+func (p StringPair) Match(i, j int) bool {
 	return p[0][i] == p[1][j]
 }
 
-// ------------------------------------------------------------------------------
-type BoolSlices [2][]bool
+//------------------------------------------------------------------------------
 
-var _ Interface = BoolSlices{}
+// BoolPair (alternative names: BoolSlices, BoolsPair, BoolSlicePair)
 
-func (p BoolSlices) Lens() (ni, nj int) {
+type BoolPair [2][]bool
+
+var _ Interface = BoolPair{}
+
+func (p BoolPair) Lens() (ni, nj int) {
 	return len(p[0]), len(p[1])
 }
 
-func (p BoolSlices) Match(i, j int) bool {
+func (p BoolPair) Match(i, j int) bool {
 	return p[0][i] == p[1][j]
 }
 
-// ------------------------------------------------------------------------------
-func Runes(a, b []rune) int {
-	return Distance(RuneSlices{a, b})
+//------------------------------------------------------------------------------
+
+func RuneSlices(a, b []rune) int {
+	return Distance(RunePair{a, b})
 }
+
+func StringSlices(a, b []string) int {
+	return Distance(StringPair{a, b})
+}
+
+func BoolSlices(a, b []bool) int {
+	return Distance(BoolPair{a, b})
+}
+
+//------------------------------------------------------------------------------
 
 func Strings(a, b string) int {
-	return Distance(RuneSlices{[]rune(a), []rune(b)})
+	return RuneSlices([]rune(a), []rune(b))
 }
 
-func Bools(a, b []bool) int {
-	return Distance(BoolSlices{a, b})
-}
+//------------------------------------------------------------------------------
