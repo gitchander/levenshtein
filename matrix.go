@@ -6,6 +6,7 @@ package levenshtein
 // | (i, j-1) - Ins   | (i, j)           |
 // +------------------+------------------+
 
+// MakeMatrix generates the full dynamic programming matrix for testing and analysis.
 func MakeMatrix(v Interface, cs Costs) [][]int {
 
 	ni, nj := v.Lens()

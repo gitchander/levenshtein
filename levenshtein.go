@@ -4,28 +4,12 @@ package levenshtein
 
 // https://en.wikipedia.org/wiki/Levenshtein_distance
 
-type Interface interface {
-	Lens() (ni, nj int)
-	Match(i, j int) bool
-}
-
-// Weights
-type Costs struct {
-	DelCost int // Delete cost
-	InsCost int // Insert cost
-	SubCost int // Substitution cost
-}
-
-var DefaultCosts = Costs{
-	DelCost: 1,
-	InsCost: 1,
-	SubCost: 1,
-}
-
+// Distance calculates the Levenshtein distance using default costs.
 func Distance(v Interface) int {
 	return DistanceCosts(v, DefaultCosts)
 }
 
+// DistanceCosts calculates the Levenshtein distance using custom costs.
 func DistanceCosts(v Interface, cs Costs) int {
 	ni, nj := v.Lens()
 	if ni < nj {
@@ -112,3 +96,27 @@ func minInt3(a, b, c int) int {
 	}
 	return c
 }
+
+//------------------------------------------------------------------------------
+
+// Convenience helper functions
+
+func RuneSlices(a, b []rune) int {
+	return Distance(RunePair{a, b})
+}
+
+func StringSlices(a, b []string) int {
+	return Distance(StringPair{a, b})
+}
+
+func BoolSlices(a, b []bool) int {
+	return Distance(BoolPair{a, b})
+}
+
+//------------------------------------------------------------------------------
+
+func Strings(a, b string) int {
+	return RuneSlices([]rune(a), []rune(b))
+}
+
+//------------------------------------------------------------------------------

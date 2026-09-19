@@ -5,7 +5,6 @@ An implementation of the Levenshtein distance for Go.
 ## Sources
 
 - [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance)
-
 - [Go Programming Language](https://golang.org/)
 
 ## Installation
@@ -14,11 +13,9 @@ An implementation of the Levenshtein distance for Go.
 go get github.com/gitchander/levenshtein
 ```
 
-Examples
---------
+## Examples
 
-Basic string distance
----------------------
+### Basic string distance
 
 ```go
 package main
@@ -39,13 +36,39 @@ func main() {
 }
 ```
 
-result:
+**Result:**
 ```
 the levenshtein distance = 6
 ```
 
-Distance between word slices
-----------------------------
+### Distance between rune slices
+
+```go
+package main
+
+import (
+	"fmt"
+
+	lev "github.com/gitchander/levenshtein"
+)
+
+func main() {
+	var (
+		a = []rune("exponential")
+		b = []rune("polynomial")
+	)
+	distance := lev.RuneSlices(a, b)
+	fmt.Printf("the levenshtein distance = %d\n", distance)
+}
+```
+
+**Result:**
+```
+the levenshtein distance = 6
+```
+
+### Distance between word slices
+
 ```go
 package main
 
@@ -70,13 +93,13 @@ func main() {
 }
 ```
 
-result:
+**Result:**
 ```
 the levenshtein distance = 1
 ```
 
-Printing the distance matrix
-----------------------------
+### Printing the distance matrix
+
 ```go
 package main
 
@@ -96,7 +119,7 @@ func main() {
 }
 ```
 
-result:
+**Result:**
 ```
 . . k i t t e n 
 . 0 1 2 3 4 5 6 
@@ -109,8 +132,8 @@ n 6 6 5 4 3 3 2
 g 7 7 6 5 4 4 3 
 ```
 
-Using custom types via the Interface
-------------------------------------
+### Using custom types via the Interface
+
 ```go
 package main
 
@@ -147,7 +170,7 @@ func main() {
 }
 ```
 
-result:
+**Result:**
 ```
 the levenshtein distance = 1
 ```

@@ -12,6 +12,7 @@ import (
 
 func main() {
 	exampleSamples()
+	exampleRunes()
 	exampleDistanceCosts()
 	examplePrintMatrix()
 	exampleRecursive()
@@ -55,6 +56,18 @@ func exampleSamples() {
 		)
 		fmt.Println(lev.Strings(a, b))
 	}
+}
+
+func exampleRunes() {
+	fmt.Println("Distance between rune slices:")
+	var (
+		sample = samples[0]
+
+		a = []rune(sample[0])
+		b = []rune(sample[1])
+	)
+	distance := lev.RuneSlices(a, b)
+	fmt.Println(distance)
 }
 
 func exampleDistanceCosts() {
@@ -130,15 +143,4 @@ func parseBits(s string) []bool {
 		}
 	}
 	return bs
-}
-
-func exampleRunes() {
-	var (
-		sample = samples[0]
-
-		a = []rune(sample[0])
-		b = []rune(sample[1])
-	)
-	distance := lev.Distance(lev.RunePair{a, b})
-	fmt.Println(distance)
 }
