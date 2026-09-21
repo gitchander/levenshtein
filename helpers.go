@@ -16,6 +16,10 @@ func BoolSlices(a, b []bool) int {
 	return Distance(BoolPair{a, b})
 }
 
+func ByteSlices(a, b []byte) int {
+	return Distance(BytePair{a, b})
+}
+
 //------------------------------------------------------------------------------
 
 func Strings(a, b string) int {

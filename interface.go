@@ -55,3 +55,17 @@ func (p BoolPair) Match(i, j int) bool {
 }
 
 //------------------------------------------------------------------------------
+
+type BytePair [2][]byte
+
+var _ Interface = BytePair{}
+
+func (p BytePair) Lens() (ni, nj int) {
+	return len(p[0]), len(p[1])
+}
+
+func (p BytePair) Match(i, j int) bool {
+	return p[0][i] == p[1][j]
+}
+
+//------------------------------------------------------------------------------
