@@ -24,28 +24,24 @@ func distanceByLen0(v Interface, cs Costs) int {
 
 	buf := make([]int, (ni + 1))
 	for i := 0; i <= ni; i++ {
-		buf[i] = i * cs.DelCost
+		buf[i] = i * cs.DeleteCost
 	}
 
 	for j := 1; j <= nj; j++ {
 		prevDiag := buf[0]
-		buf[0] = j * cs.InsCost
+		buf[0] = j * cs.InsertCost
 		for i := 1; i <= ni; i++ {
 
-			// (i-1, j) - Delete
-			delCost := buf[i-1] + cs.DelCost
+			diagCost := getDiagonalCost(cs, v.Match(i-1, j-1))
 
-			// (i, j-1) - Insert
-			insCost := buf[i] + cs.InsCost
-
-			// (i-1, j-1) - Substitution
-			subCost := prevDiag
-			if !(v.Match(i-1, j-1)) {
-				subCost += cs.SubCost
-			}
+			newValue := minInt3(
+				(prevDiag + diagCost),      // (i-1, j-1) - Match or Replace
+				(buf[i-1] + cs.DeleteCost), // (i-1, j) - Delete
+				(buf[i] + cs.InsertCost),   // (i, j-1) - Insert
+			)
 
 			prevDiag = buf[i]
-			buf[i] = minInt3(delCost, insCost, subCost)
+			buf[i] = newValue
 		}
 	}
 	return buf[ni]
@@ -57,28 +53,24 @@ func distanceByLen1(v Interface, cs Costs) int {
 
 	buf := make([]int, (nj + 1))
 	for j := 0; j <= nj; j++ {
-		buf[j] = j * cs.InsCost
+		buf[j] = j * cs.InsertCost
 	}
 
 	for i := 1; i <= ni; i++ {
 		prevDiag := buf[0]
-		buf[0] = i * cs.DelCost
+		buf[0] = i * cs.DeleteCost
 		for j := 1; j <= nj; j++ {
 
-			// (i-1, j) - Delete
-			delCost := buf[j] + cs.DelCost
+			diagCost := getDiagonalCost(cs, v.Match(i-1, j-1))
 
-			// (i, j-1) - Insert
-			insCost := buf[j-1] + cs.InsCost
-
-			// (i-1, j-1) - Substitution
-			subCost := prevDiag
-			if !(v.Match(i-1, j-1)) {
-				subCost += cs.SubCost
-			}
+			newValue := minInt3(
+				(prevDiag + diagCost),      // (i-1, j-1) - Match or Replace
+				(buf[j] + cs.DeleteCost),   // (i-1, j) - Delete
+				(buf[j-1] + cs.InsertCost), // (i, j-1) - Insert
+			)
 
 			prevDiag = buf[j]
-			buf[j] = minInt3(delCost, insCost, subCost)
+			buf[j] = newValue
 		}
 	}
 	return buf[nj]
@@ -96,27 +88,3 @@ func minInt3(a, b, c int) int {
 	}
 	return c
 }
-
-//------------------------------------------------------------------------------
-
-// Convenience helper functions
-
-func RuneSlices(a, b []rune) int {
-	return Distance(RunePair{a, b})
-}
-
-func StringSlices(a, b []string) int {
-	return Distance(StringPair{a, b})
-}
-
-func BoolSlices(a, b []bool) int {
-	return Distance(BoolPair{a, b})
-}
-
-//------------------------------------------------------------------------------
-
-func Strings(a, b string) int {
-	return RuneSlices([]rune(a), []rune(b))
-}
-
-//------------------------------------------------------------------------------

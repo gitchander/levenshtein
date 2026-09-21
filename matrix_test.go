@@ -19,9 +19,10 @@ func TestMatrixSamples(t *testing.T) {
 			a: "sitting",
 			b: "kitten",
 			costs: Costs{
-				DelCost: 1,
-				InsCost: 1,
-				SubCost: 1,
+				MatchCost:   0,
+				ReplaceCost: 1,
+				DeleteCost:  1,
+				InsertCost:  1,
 			},
 			matrix: [][]int{
 				{0, 1, 2, 3, 4, 5, 6},
@@ -39,9 +40,10 @@ func TestMatrixSamples(t *testing.T) {
 			a: "Sunday",
 			b: "Saturday",
 			costs: Costs{
-				DelCost: 1,
-				InsCost: 1,
-				SubCost: 1,
+				MatchCost:   0,
+				ReplaceCost: 1,
+				DeleteCost:  1,
+				InsertCost:  1,
 			},
 			matrix: [][]int{
 				{0, 1, 2, 3, 4, 5, 6, 7, 8},
@@ -58,9 +60,10 @@ func TestMatrixSamples(t *testing.T) {
 			a: "hello",
 			b: "world",
 			costs: Costs{
-				DelCost: 1,
-				InsCost: 1,
-				SubCost: 1,
+				MatchCost:   0,
+				ReplaceCost: 1,
+				DeleteCost:  1,
+				InsertCost:  1,
 			},
 			matrix: [][]int{
 				{0, 1, 2, 3, 4, 5},
@@ -76,9 +79,10 @@ func TestMatrixSamples(t *testing.T) {
 			a: "AACGCA",
 			b: "GAGCTA",
 			costs: Costs{
-				DelCost: 1,
-				InsCost: 1,
-				SubCost: 2,
+				MatchCost:   0,
+				ReplaceCost: 2,
+				DeleteCost:  1,
+				InsertCost:  1,
 			},
 			matrix: [][]int{
 				{0, 1, 2, 3, 4, 5, 6},
@@ -95,9 +99,10 @@ func TestMatrixSamples(t *testing.T) {
 			a: "exponential",
 			b: "polynomial",
 			costs: Costs{
-				DelCost: 1,
-				InsCost: 1,
-				SubCost: 1,
+				MatchCost:   0,
+				ReplaceCost: 1,
+				DeleteCost:  1,
+				InsertCost:  1,
 			},
 			matrix: [][]int{
 				{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},

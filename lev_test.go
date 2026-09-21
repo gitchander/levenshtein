@@ -10,9 +10,10 @@ import (
 func TestRandomSamples(t *testing.T) {
 
 	cs := Costs{
-		DelCost: 1,
-		InsCost: 1,
-		SubCost: 1,
+		MatchCost:   0,
+		ReplaceCost: 1,
+		DeleteCost:  1,
+		InsertCost:  1,
 	}
 	corpus := []rune("abcdefghijklmnopqrstuvwxyz")
 
@@ -32,25 +33,25 @@ func TestRandomSamples(t *testing.T) {
 				if n == 0 {
 					nr := random.RuneByCorpus(r, corpus)
 					b = insertRune(b, r.Intn(n+1), nr)
-					cost += cs.InsCost
+					cost += cs.InsertCost
 				} else {
 					switch k := r.Intn(3); k {
 					case 0:
 						{
 							b = deleteRune(b, r.Intn(n))
-							cost += cs.DelCost
+							cost += cs.DeleteCost
 						}
 					case 1:
 						{
 							nr := random.RuneByCorpus(r, corpus)
 							b = insertRune(b, r.Intn(n+1), nr)
-							cost += cs.InsCost
+							cost += cs.InsertCost
 						}
 					case 2:
 						{
 							nr := random.RuneByCorpus(r, corpus)
 							b = substituteRune(b, r.Intn(n), nr)
-							cost += cs.SubCost
+							cost += cs.ReplaceCost
 						}
 					}
 				}
@@ -111,9 +112,10 @@ func TestLens(t *testing.T) {
 	r := random.NewRandNow()
 
 	cs := Costs{
-		DelCost: 1,
-		InsCost: 1,
-		SubCost: 1,
+		MatchCost:   0,
+		ReplaceCost: 1,
+		DeleteCost:  1,
+		InsertCost:  1,
 	}
 	corpus := []rune("abcdefghijklmnopqrstuvwxyz")
 
@@ -174,7 +176,7 @@ func (m *runesMutator) Mutate(rs []rune) []rune {
 	if n == 0 {
 		nr := m.randRune()
 		rs = insertRune(rs, m.r.Intn(n+1), nr)
-		m.cost += m.cs.InsCost
+		m.cost += m.cs.InsertCost
 		return rs
 	}
 
@@ -182,19 +184,19 @@ func (m *runesMutator) Mutate(rs []rune) []rune {
 	case 0:
 		{
 			rs = deleteRune(rs, m.r.Intn(n))
-			m.cost += m.cs.DelCost
+			m.cost += m.cs.DeleteCost
 		}
 	case 1:
 		{
 			nr := m.randRune()
 			rs = insertRune(rs, m.r.Intn(n+1), nr)
-			m.cost += m.cs.InsCost
+			m.cost += m.cs.InsertCost
 		}
 	case 2:
 		{
 			nr := m.randRune()
 			rs = substituteRune(rs, m.r.Intn(n), nr)
-			m.cost += m.cs.SubCost
+			m.cost += m.cs.ReplaceCost
 		}
 	}
 

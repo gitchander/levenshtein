@@ -18,6 +18,7 @@ func main() {
 	exampleRecursive()
 	exampleFields()
 	exampleBits()
+	// exampleTrans()
 }
 
 var samples = [][2]string{
@@ -80,9 +81,10 @@ func exampleDistanceCosts() {
 	)
 	v := lev.RunePair{a, b}
 	cs := lev.Costs{
-		DelCost: 1,
-		InsCost: 1,
-		SubCost: 1,
+		MatchCost:   0,
+		ReplaceCost: 1,
+		DeleteCost:  1,
+		InsertCost:  1,
 	}
 	fmt.Println(lev.DistanceCosts(v, cs))
 }
@@ -144,3 +146,13 @@ func parseBits(s string) []bool {
 	}
 	return bs
 }
+
+// func exampleTrans() {
+// 	var (
+// 		a = []rune("home")
+// 		b = []rune("home1")
+// 	)
+// 	v := lev.RunePair{a, b}
+// 	ts := lev.GetTransformations(v, lev.DefaultCosts)
+// 	fmt.Println(ts)
+// }

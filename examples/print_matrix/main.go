@@ -38,9 +38,10 @@ func printSamples() {
 			a: []rune("AACGCA"),
 			b: []rune("GAGCTA"),
 			costs: lev.Costs{
-				InsCost: 1,
-				DelCost: 1,
-				SubCost: 2,
+				MatchCost:   0,
+				ReplaceCost: 2,
+				DeleteCost:  1,
+				InsertCost:  1,
 			},
 		},
 		{
