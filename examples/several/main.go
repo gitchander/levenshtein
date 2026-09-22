@@ -18,7 +18,7 @@ func main() {
 	exampleRecursive()
 	exampleFields()
 	exampleBits()
-	// exampleTrans()
+	exampleTrans()
 }
 
 var samples = [][2]string{
@@ -147,12 +147,38 @@ func parseBits(s string) []bool {
 	return bs
 }
 
-// func exampleTrans() {
-// 	var (
-// 		a = []rune("home")
-// 		b = []rune("home1")
-// 	)
-// 	v := lev.RunePair{a, b}
-// 	ts := lev.GetTransformations(v, lev.DefaultCosts)
-// 	fmt.Println(ts)
-// }
+func exampleTrans() {
+	var (
+		a = []rune("abcdefllgh")
+		b = []rune("hello, world!")
+	)
+	v := lev.RunePair{a, b} // переконайтеся, що поля структури названі правильно
+	ts := lev.GetTransformations(v, lev.DefaultCosts)
+	fmt.Println(ts)
+
+	offset := 0
+	rs := cloneRunes(a)
+
+	for _, t := range ts {
+		// Поточний індекс у нашому змінюваному масиві `rs`
+		// (t.SourceIdx показує позицію в `а`, а `offset` коригує її з урахуванням попередніх вставок/видалень)
+		currentIdx := t.SourceIdx + offset
+
+		switch t.Op {
+		case lev.OpMatch:
+			// Нічого не робимо, елементи вже збігаються
+		case lev.OpReplace:
+			// Замінюємо символ у rs на відповідний символ з b
+			rs = substituteRune(rs, currentIdx, b[t.TargetIdx])
+		case lev.OpDelete:
+			// Видаляємо символ за поточним індексом
+			rs = deleteRune(rs, currentIdx)
+			offset-- // при видаленні наступні елементи зсуваються вліво
+		case lev.OpInsert:
+			// Вставляємо символ із рядка b за індексом t.TargetIdx
+			rs = insertRune(rs, currentIdx, b[t.TargetIdx])
+			offset++ // при вставці наступні елементи зсуваються вправо
+		}
+	}
+	fmt.Println(string(rs)) // Очікувано виведе "ome7"
+}

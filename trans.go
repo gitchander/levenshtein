@@ -27,22 +27,17 @@ func (o Operation) String() string {
 
 // Step
 type EditOp struct {
-	Op Operation // Operation type (integer based)
-	//Char string    // Character from the target string (or the deleted one)
-	//Pos  int       // Position in the source string (0-indexed)
-
+	Op        Operation // Operation type (integer based)
 	SourceIdx int
 	TargetIdx int
 	Cost      int
 }
 
 // GetTransformations reconstructs the transformation path using a completed Levenshtein matrix.
-// todo
-func getTransformations(v Interface, cs Costs) []EditOp {
+func GetTransformations(v Interface, cs Costs) []EditOp {
 
 	dp := MakeMatrix(v, cs)
 
-	// Обратный ход (Backtracking) в едином стиле
 	i, j := v.Lens()
 
 	var eos []EditOp
@@ -65,19 +60,23 @@ func getTransformations(v Interface, cs Costs) []EditOp {
 			}
 
 			eos = append(eos, eo)
+
 			i--
 			j--
-		} else if j > 0 && (dp[i][j] == dp[i][j-1]+cs.InsertCost) {
+
+		} else if j > 0 && (dp[i][j] == (dp[i][j-1] + cs.InsertCost)) {
 
 			eo := EditOp{
 				Op:        OpInsert,
-				SourceIdx: -1,
+				SourceIdx: i,
 				TargetIdx: j - 1,
 				Cost:      cs.InsertCost,
 			}
 
 			eos = append(eos, eo)
+
 			j--
+
 		} else if i > 0 && (dp[i][j] == (dp[i-1][j] + cs.DeleteCost)) {
 
 			eo := EditOp{
@@ -88,6 +87,7 @@ func getTransformations(v Interface, cs Costs) []EditOp {
 			}
 
 			eos = append(eos, eo)
+
 			i--
 		}
 	}
